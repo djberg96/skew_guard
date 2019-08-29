@@ -4,8 +4,14 @@ require 'attempt'
 Gem.pre_install do |installer|
   offset = 0
 
+  if Gem.win_platform?
+    server = 'pool.ntp.org' # TODO: Find better default?
+  else
+    server = IO.read("/etc/ntp.conf")[/^server\s([\p{Alnum}\.]*)/, 1] || 'pool.ntp.org'
+  end
+
   attempt(tries: 3, interval: 3) do
-    offset = Net::NTP.get('pool.ntp.org', 'ntp', 5).offset.abs
+    offset = Net::NTP.get(server, 'ntp', 5).offset.abs
   end
 
   if offset > 300
@@ -24,5 +30,7 @@ in order to get your computer's clock synced before proceeding.
       when /\An/i then next false
       else fail "cannot understand '#{choice}'"
     end
+  else
+    puts "No significant clock skew detected, proceeding..."
   end
 end
