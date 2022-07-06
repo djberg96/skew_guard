@@ -7,13 +7,14 @@ class Gem::Commands::InstallCommand
 
   def initialize
     orig_init
-    add_option('--skew-max MINUTES', 'Set the maximum clock skew in minutes') do |max, options|
+    add_option('--skew-max SECONDS', 'Set the maximum clock skew in seconds') do |max, options|
       options[:skew_max] = max
     end
   end
 end
 
 Gem.pre_install do |installer|
+  cmd = Gem::CommandManager.instance[:install]
   offset = 0
   default = 'pool.ntp.org'
 
@@ -23,15 +24,17 @@ Gem.pre_install do |installer|
     server = default
   end
 
-  # TODO: Make this configurable as a flag to the install command.
+  # We'll give it 3 attempts, at 3 seconds between each attempt.
   attempt(tries: 3, interval: 3) do
     puts "Checking for clock skew..."
     offset = Net::NTP.get(server, 'ntp', 5).offset.abs
   end
 
-  # TODO: Make this configurable as a flag to the install command.
-  # gem install --skew-max 5
-  if offset > 300
+  # Default to 5 minutes
+  cmd.options[:skew_max] ||= 300
+  puts "Maximum clock skew set to #{cmd.options[:skew_max]}..."
+
+  if offset > cmd.options[:skew_max].to_i
     msg = %Q{
 Your clock appears to be skewed by #{skew_max} or more minutes. Gem installation attempts may fail.
 
