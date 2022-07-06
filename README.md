@@ -20,12 +20,12 @@ not cause a warning. By default, this is 5 minutes.
   as part of the install command. 
 
   ```
-  # Let's pretend there's a clock skew over 5 minutes. You would see this:
+  # Let's pretend there's a clock skew over 2 minutes. You would see this:
   gem install --skew-max 120 some_gem
 
   Checking for clock skew...
 
-  Your clock appears to be skewed by 5 or more minutes. Gem installation attempts may fail.
+  Your clock appears to be skewed by 120 or more seconds. Gem installation attempts may fail.
 
   Please consider running 'sudo ntpdate some.time.server' (Unix) or 'w32tm /resync' (Windows)
   in order to get your computer's clock synced before proceeding.
