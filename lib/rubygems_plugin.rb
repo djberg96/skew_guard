@@ -36,7 +36,7 @@ Gem.pre_install do |installer|
 
   if offset > cmd.options[:skew_max].to_i
     msg = %Q{
-Your clock appears to be skewed by #{skew_max} or more minutes. Gem installation attempts may fail.
+Your clock appears to be skewed by #{skew_max} or more seconds. Gem installation attempts may fail.
 
 Please consider running 'sudo ntpdate some.time.server' (Unix) or 'w32tm /resync' (Windows)
 in order to get your system's clock synced before proceeding.
