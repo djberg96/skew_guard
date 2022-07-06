@@ -41,6 +41,9 @@ There will be 3 attempts made to contact the ntp server, with 3 seconds between 
 So long as at least one attempt works there will not be an issue, otherwise you may see
 an error.
 
+The default skew max check is 300 seconds (5 minutes), based on various experiences with
+both the Azure and AWS providers. Modify via the command line as you see fit.
+
 ## Known Bugs
 None that I'm aware of. Please report bugs on the project page at:
 
