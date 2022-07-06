@@ -1,5 +1,17 @@
 require 'net/ntp'
 require 'attempt'
+require 'rubygems/commands/install_command'
+
+class Gem::Commands::InstallCommand
+  alias orig_init initialize
+
+  def initialize
+    orig_init
+    add_option('--skew-max MINUTES', 'Set the maximum clock skew in minutes') do |max, options|
+      options[:skew_max] = max
+    end
+  end
+end
 
 Gem.pre_install do |installer|
   offset = 0
@@ -18,12 +30,13 @@ Gem.pre_install do |installer|
   end
 
   # TODO: Make this configurable as a flag to the install command.
+  # gem install --skew-max 5
   if offset > 300
     msg = %Q{
-Your clock appears to be skewed by 5 or more minutes. Gem installation attempts may fail.
+Your clock appears to be skewed by #{skew_max} or more minutes. Gem installation attempts may fail.
 
 Please consider running 'sudo ntpdate some.time.server' (Unix) or 'w32tm /resync' (Windows)
-in order to get your computer's clock synced before proceeding.
+in order to get your system's clock synced before proceeding.
 }
 
     puts msg
