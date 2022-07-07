@@ -31,10 +31,10 @@ Gem.pre_install do |installer|
   end
 
   # Default to 5 minutes
-  cmd.options[:skew_max] ||= 300
-  puts "Maximum clock skew set to #{cmd.options[:skew_max]}..."
+  skew_max = cmd.options[:skew_max] || 300
+  puts "Maximum clock skew set to #{skew_max}..."
 
-  if offset > cmd.options[:skew_max].to_i
+  if offset > skew_max.to_i
     msg = %Q{
 Your clock appears to be skewed by #{skew_max} or more seconds. Gem installation attempts may fail.
 
